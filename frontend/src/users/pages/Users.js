@@ -59,7 +59,7 @@ const Users = () => {
           <LoadingSpinner />
         </div>
       )}
-      {!isLoading && users && user && (
+      {!isLoading && users && (
         <UsersList
           items={users}
           userData={user}
