@@ -4,6 +4,7 @@ import Avatar from '../../shared/component/UIElements/Avatar';
 import Card from '../../shared/component/UIElements/Card';
 import './UserItem.css';
 import useHttpClient from '../../shared/hooks/http-hook';
+import ErrorModal from '../../shared/component/UIElements/ErrorModal';
 
 const UserItem = ({ user, userData, auth, sendFriendRequestHandler }) => {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
@@ -69,22 +70,25 @@ const UserItem = ({ user, userData, auth, sendFriendRequestHandler }) => {
   };
 
   return (
-    <li className="user-item">
-      <Card className="user-item__content">
-        <Link to={`/${id}/places`}>
-          <div className="user-item__image">
-            <Avatar image={image} alt={name} />
-          </div>
-          <div className="user-item__info">
-            <h2>{name}</h2>
-            <h3>
-              {places.length} {places.length === 1 ? 'Place' : 'Places'}
-            </h3>
-          </div>
-        </Link>
-        {userData.friendStatus && <Button />}
-      </Card>
-    </li>
+    <>
+      <ErrorModal error={error} onClear={clearError} />
+      <li className="user-item">
+        <Card className="user-item__content">
+          <Link to={`/${id}/places`}>
+            <div className="user-item__image">
+              <Avatar image={image} alt={name} />
+            </div>
+            <div className="user-item__info">
+              <h2>{name}</h2>
+              <h3>
+                {places.length} {places.length === 1 ? 'Place' : 'Places'}
+              </h3>
+            </div>
+          </Link>
+          {!isLoading && userData.friendStatus && <Button />}
+        </Card>
+      </li>
+    </>
   );
 };
 

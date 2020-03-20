@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext, Fragment } from 'react';
 import FriendList from '../FriendList';
 import { AuthContext } from '../../shared/context/auth-context';
 import useHttpClient from '../../shared/hooks/http-hook';
+import ErrorModal from '../../shared/component/UIElements/ErrorModal';
 
 const Friends = () => {
   const auth = useContext(AuthContext);
@@ -46,6 +47,7 @@ const Friends = () => {
 
   return (
     <Fragment>
+      <ErrorModal error={error} onClear={clearError} />
       {!isLoading && receivedFriend && friends && (
         <FriendList
           auth={auth}

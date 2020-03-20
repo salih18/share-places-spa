@@ -38,16 +38,23 @@ const Users = () => {
   }, [sendRequest]);
 
   const sendFriendRequestHandler = id => {
-    const sentUser = users.find(users => users._id == id);
+    const { _id, name, image, email } = users.find(users => users._id == id);
     const sentUserObj = {
-      userId: sentUser._id,
-      name: sentUser.name,
-      image: sentUser.image,
-      email: sentUser.email,
+      userId: _id,
+      name,
+      image,
+      email,
     };
     setUser(prevUsers => {
-      prevUsers.friendStatus.sentFriendRequest.push(sentUserObj);
-      return { ...prevUsers };
+      const newUserState = {
+        ...prevUsers,
+        friendStatus: {
+          sentFriendRequest: [{ ...sentUserObj }],
+          friendsList: [...prevUsers.friendStatus.friendsList],
+          receivedFriendRequest: [...prevUsers.friendStatus.receivedFriendRequest],
+        },
+      };
+      return newUserState;
     });
   };
   return (
@@ -58,7 +65,7 @@ const Users = () => {
           <LoadingSpinner />
         </div>
       )}
-      {!isLoading && users && (
+      {!isLoading && users && user && (
         <UsersList
           items={users}
           userData={user}
