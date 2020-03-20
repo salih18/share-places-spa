@@ -9,7 +9,7 @@ import { AuthContext } from '../../shared/context/auth-context';
 
 const Users = () => {
   const [users, setUsers] = useState();
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState();
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const auth = useContext(AuthContext);
   useEffect(() => {
@@ -45,15 +45,9 @@ const Users = () => {
       image,
       email,
     };
-    setUser(prevUsers => {
-      const newUserState = {
-        ...prevUsers,
-        friendStatus: {
-          sentFriendRequest: [{ ...sentUserObj }],
-          friendsList: [...prevUsers.friendStatus.friendsList],
-          receivedFriendRequest: [...prevUsers.friendStatus.receivedFriendRequest],
-        },
-      };
+    setUser(prevUser => {
+      const newUserState = JSON.parse(JSON.stringify(prevUser));
+      newUserState.friendStatus.sentFriendRequest.push(sentUserObj);
       return newUserState;
     });
   };

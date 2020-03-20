@@ -85,7 +85,7 @@ const UserItem = ({ user, userData, auth, sendFriendRequestHandler }) => {
               </h3>
             </div>
           </Link>
-          {!isLoading && userData.friendStatus && <Button />}
+          {!isLoading && <Button />}
         </Card>
       </li>
     </>
