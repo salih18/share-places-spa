@@ -11,7 +11,6 @@ import useHttpClient from '../../shared/hooks/http-hook';
 const PlaceItem = ({ place, onDeletePlace }) => {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const auth = useContext(AuthContext);
-  console.log({ auth });
   const [showMap, setShowMap] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const openMapHandler = () => setShowMap(true);

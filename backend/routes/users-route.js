@@ -27,6 +27,7 @@ route.post('/login', usersControllers.login);
 
 route.use(checkAuth);
 // For test we added these
+route.get('/me', usersControllers.getUser);
 route.post('/send/:pid', usersControllers.sendFriendRequest);
 route.put('/send/:pid', usersControllers.acceptFriendRequest);
 route.delete('/send/:pid', usersControllers.cancelFriendRequest);

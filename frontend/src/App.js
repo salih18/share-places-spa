@@ -17,7 +17,7 @@ const UserPlaces = React.lazy(() => import('./places/pages/UserPlaces'));
 const UpdatePlace = React.lazy(() => import('./places/pages/UpdatePlace'));
 const Auth = React.lazy(() => import('./users/pages/Auth'));
 const App = () => {
-  const { token, login, logout, userId, friendStatus } = useAuth();
+  const { token, login, logout, userId } = useAuth();
 
   let routes;
   if (token) {
@@ -65,7 +65,6 @@ const App = () => {
         login,
         logout,
         userId,
-        friendStatus,
       }}
     >
       <Router>

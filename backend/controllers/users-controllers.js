@@ -10,16 +10,16 @@ var cloudinary = require('../uploads/cloudinary');
 
 const sendFriendRequest = async (req, res, next) => {
   console.log(req.params.pid);
-  try {
-    const user = await User.findById(req.user.id).select('-password');
-    res.json(user);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
-  }
+  res.status(201).json(req.params.pid);
 };
 
 const acceptFriendRequest = async (req, res, next) => {
+  console.log(req.params.pid);
+  res.status(201).json(req.params.pid);
+};
+// we added this to get my user data
+const getUser = async (req, res, next) => {
+  console.log(req.userData.userId);
   const friendsList = [
     {
       userId: '5e6a513120056326449f4a9b',
@@ -44,8 +44,6 @@ const acceptFriendRequest = async (req, res, next) => {
       image:
         'http://res.cloudinary.com/dqxb7twea/image/upload/v1584632214/rrsfngemkorh4f2bsokj.jpg',
     },
-  ];
-  const sentFriendRequest = [
     {
       userId: '5e73f9420c11ff36ec3117c9',
       name: 'haydar',
@@ -54,20 +52,9 @@ const acceptFriendRequest = async (req, res, next) => {
         'http://res.cloudinary.com/dqxb7twea/image/upload/v1584658754/c5wty72gpraaaopzak8j.jpg',
     },
   ];
-  console.log(req.params.pid);
-  console.log(req.userData.userId);
+  const sentFriendRequest = [];
 
-  // Get remove index
-  const removeIndex = receivedFriendRequest.map(user => user.userId).indexOf(req.params.pid);
-  console.log({ removeIndex });
-  const accepted = receivedFriendRequest[removeIndex];
-  receivedFriendRequest.splice(removeIndex, 1);
-
-  friendsList.push(accepted);
-  console.log({ receivedFriendRequest });
-  console.log({ friendsList });
   const user = await User.findById(req.userData.userId);
-  console.log({ user });
   res.status(201).json({
     userId: req.userData.userId,
     email: user.email,
@@ -79,6 +66,7 @@ const acceptFriendRequest = async (req, res, next) => {
 
 const cancelFriendRequest = async (req, res, next) => {
   console.log(req.params.pid);
+  res.status(201).json(req.params.pid);
 };
 
 const getUsers = async (req, res, next) => {
@@ -193,6 +181,7 @@ const login = async (req, res, next) => {
 
 // we added friend request methods
 module.exports = {
+  getUser,
   getUsers,
   signup,
   login,

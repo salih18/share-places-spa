@@ -22,11 +22,14 @@ const FriendItem = ({ user: { userId, places, name, image, email } }) => {
   );
 };
 
-const ReceivedFriendRequestItem = ({ user: { userId, places, name, image, email }, auth }) => {
-  console.log({ auth });
+const ReceivedFriendRequestItem = ({
+  user: { userId, places, name, image, email },
+  auth,
+  acceptFriendHandler,
+  cancelFriendHandler,
+}) => {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
-
-  const acceptFriendRequest = async () => {
+  const acceptFriendRequest = async userID => {
     try {
       const res = await sendRequest(
         `${process.env.REACT_APP_BACKEND_URL}/users/send/${userId}`,
@@ -36,10 +39,10 @@ const ReceivedFriendRequestItem = ({ user: { userId, places, name, image, email 
           Authorization: 'Bearer ' + auth.token,
         },
       );
-      console.log('acc', res);
+      acceptFriendHandler(userID);
     } catch (error) {}
   };
-  const cancelFriendRequest = async () => {
+  const cancelFriendRequest = async userID => {
     try {
       const res = await sendRequest(
         `${process.env.REACT_APP_BACKEND_URL}/users/send/${userId}`,
@@ -49,7 +52,10 @@ const ReceivedFriendRequestItem = ({ user: { userId, places, name, image, email 
           Authorization: 'Bearer ' + auth.token,
         },
       );
-    } catch (error) {}
+      cancelFriendHandler(userID);
+    } catch (error) {
+      console.error(error);
+    }
   };
   return (
     <li className="user-item">
@@ -64,7 +70,7 @@ const ReceivedFriendRequestItem = ({ user: { userId, places, name, image, email 
         </Link>
         <button className="btn btn-success" onClick={() => acceptFriendRequest(userId)}>
           <i className="fas fa-check-circle"></i>Accept
-        </button>
+        </button>{' '}
         <button className="btn btn-success" onClick={() => cancelFriendRequest(userId)}>
           <i className="fas fa-window-close"></i>Cancel
         </button>

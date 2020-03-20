@@ -5,21 +5,27 @@ import Card from '../../shared/component/UIElements/Card';
 import './UserItem.css';
 import useHttpClient from '../../shared/hooks/http-hook';
 
-const UserItem = ({ user, auth }) => {
+const UserItem = ({ user, userData, auth, sendFriendRequestHandler }) => {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const { id, image, name, places } = user;
   const Button = () => {
-    const isFriend = auth.friendStatus.friendsList.filter(friend => {
+    const isFriend = userData.friendStatus.friendsList.filter(friend => {
       return friend.userId === id;
     });
-    const isReceived = auth.friendStatus.receivedFriendRequest.filter(req => req.userId === id);
-    const isSent = auth.friendStatus.sentFriendRequest.filter(sendReq => sendReq.userId === id);
+    const isReceived = userData.friendStatus.receivedFriendRequest.filter(req => req.userId === id);
+    const isSent = userData.friendStatus.sentFriendRequest.filter(sendReq => sendReq.userId === id);
 
     const sendFriendRequest = async () => {
       try {
-        await sendRequest(`${process.env.REACT_APP_BACKEND_URL}/users/send/${id}`, 'POST', null, {
-          Authorization: 'Bearer ' + auth.token,
-        });
+        const user = await sendRequest(
+          `${process.env.REACT_APP_BACKEND_URL}/users/send/${id}`,
+          'POST',
+          null,
+          {
+            Authorization: 'Bearer ' + auth.token,
+          },
+        );
+        sendFriendRequestHandler(id);
       } catch (error) {}
     };
 
@@ -49,7 +55,7 @@ const UserItem = ({ user, auth }) => {
         );
       }
 
-      if (id === auth.userId) {
+      if (id === userData.userId) {
         return <></>;
       }
 
@@ -76,7 +82,7 @@ const UserItem = ({ user, auth }) => {
             </h3>
           </div>
         </Link>
-        <Button />
+        {userData.friendStatus && <Button />}
       </Card>
     </li>
   );

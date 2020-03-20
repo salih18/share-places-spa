@@ -5,20 +5,51 @@ import LoadingSpinner from '../../shared/component/UIElements/LoadingSpinner';
 import useHttpClient from '../../shared/hooks/http-hook';
 import { AuthContext } from '../../shared/context/auth-context';
 
+// user token la get yapilacak ki user objelerimiz gelsin
+
 const Users = () => {
   const [users, setUsers] = useState();
+  const [user, setUser] = useState({});
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const auth = useContext(AuthContext);
   useEffect(() => {
     const getUsers = async () => {
       try {
-        const data = await sendRequest(`${process.env.REACT_APP_BACKEND_URL}/users`);
-        setUsers(data.users);
+        if (!auth.token) {
+          const data = await sendRequest(`${process.env.REACT_APP_BACKEND_URL}/users`);
+          setUsers(data.users);
+        } else {
+          const data = await sendRequest(`${process.env.REACT_APP_BACKEND_URL}/users`);
+          setUsers(data.users);
+          const userData = await sendRequest(
+            `${process.env.REACT_APP_BACKEND_URL}/users/me`,
+            'GET',
+            null,
+            {
+              Authorization: 'Bearer ' + auth.token,
+            },
+          );
+
+          setUser(userData);
+        }
       } catch (error) {}
     };
     getUsers();
   }, [sendRequest]);
 
+  const sendFriendRequestHandler = id => {
+    const sentUser = users.find(users => users._id == id);
+    const sentUserObj = {
+      userId: sentUser._id,
+      name: sentUser.name,
+      image: sentUser.image,
+      email: sentUser.email,
+    };
+    setUser(prevUsers => {
+      prevUsers.friendStatus.sentFriendRequest.push(sentUserObj);
+      return { ...prevUsers };
+    });
+  };
   return (
     <Fragment>
       <ErrorModal error={error} onClear={clearError} />
@@ -27,7 +58,14 @@ const Users = () => {
           <LoadingSpinner />
         </div>
       )}
-      {!isLoading && users && auth.friendStatus && <UsersList items={users} auth={auth} />}
+      {!isLoading && users && (
+        <UsersList
+          items={users}
+          userData={user}
+          auth={auth}
+          sendFriendRequestHandler={sendFriendRequestHandler}
+        />
+      )}
     </Fragment>
   );
 };
